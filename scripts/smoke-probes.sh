@@ -1,6 +1,7 @@
 # shellcheck shell=bash
-# scripts/smoke.sh 与 e2e/smoke.sh 共用的插件探针。
-# 钩子可用面（负责人 2026-11-07 定）：变量 SMOKE_STATE（数据标记，e2e 是文件、dev.sh probes 是目录）、
+# scripts/smoke.sh 的一项一项探测，跟着插件走。没写的项会 FAIL 并给出写法，不会默认放行。
+#
+# 钩子可用面：变量 SMOKE_STATE（数据标记：文件，或 dev.sh probes 的目录）、
 # SMOKE_JAR、SMOKE_WEB_URL、SMOKE_OWNER、SMOKE_BASE、SMOKE_TOKEN、SMOKE_INSTANCE；助手 web_get、dweb。
 # AutoBangumi：sso=none + 应用自带登录。上游在首次启动固定建出厂账号 admin/adminadmin
 # （源码 module/database/user.py，应用没有改初始密码的配置项），插件 about 已写明首登改密。
