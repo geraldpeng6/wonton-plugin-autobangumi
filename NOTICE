@@ -1,7 +1,11 @@
 图标
 ====
 
-`icon.svg` 为本仓库原创，按插件规范的线条风格手写，未用图片模型生成。从模板新建的插件换成自己的图标时，这里按实际情况重写。
+`icon.svg` 中的标志取自 AutoBangumi 上游仓库的官方标志（`docs/public/light-logo.svg`，MIT 许可证，
+来源 https://github.com/EstrellaXD/Auto_Bangumi ），原样使用：等比缩放到画布 80%、放在白色底上，
+未改色、未变形、未与其他图形拼合。AutoBangumi 和其标志是上游项目（EstrellaXD）的商标。
+
+本仓库对其余部分（白底画布）按插件包许可证（MIT）分发。
 
 许可证
 ------

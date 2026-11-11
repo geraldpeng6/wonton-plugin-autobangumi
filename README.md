@@ -1,43 +1,39 @@
-# 云吞插件模板
+# 自动追番（AutoBangumi）
 
-开发流程见[插件开发指南](https://github.com/wontonapp/wonton-docs/blob/main/develop.md)。
+按蜜柑计划（Mikan Project）等 RSS 源自动追新番：番剧更新后自动下载、按官方标题和季集格式改名整理，
+可选硬链接进媒体库给 Jellyfin 看。
 
-这是一个能安装的示例插件 `app.example.hello`：使用 nginx 官方镜像显示问候页，经网关的 `sso: proxy` 注入用户名，页面显示“你好，<用户名>”。示例没有应用账号、持久化数据或 MCP 工具。
+云吞插件包：[插件规范](https://github.com/wontonapp/wonton-docs/blob/main/plugin-spec.md) ·
+[开发指南](https://github.com/wontonapp/wonton-docs/blob/main/develop.md)。
 
-## 示例文件
+## 用法
 
-| 路径 | 内容 |
+1. 装好插件后打开网页，用账号 `admin`、密码 `adminadmin` 登录，**马上在 设置 → 用户与访问控制
+   里改密码**（上游应用在首次启动时固定建这个默认账号，没有改初始密码的配置项）。
+2. 装了 [下载工具（qBittorrent）](https://github.com/geraldpeng6/wonton-plugin-qbittorrent) 插件的，
+   下载器地址已经自动配好；否则在设置向导里自己填下载器。
+3. 右上角 **+** → 勾选「聚合 RSS」，粘贴蜜柑计划的 RSS 链接（登录 mikanani.me 后右下角 RSS 按钮复制）。
+4. 想让 Jellyfin 直接看到：在 设置 → 插件 里启用「硬链接到媒体库」，下载根目录填 `/downloads`，
+   媒体库目录填 `/media` 下的子目录。
+
+机器人（聊天里 @ 它）能查追番列表、搜番、订阅/退订、看下载进度，经 AutoBangumi 的 MCP 接口。
+
+## 权限
+
+| 权限 | 用途 |
 | --- | --- |
-| `docker-compose.yml` | 示例清单、nginx 服务和三个 `configs` |
-| `web/default.conf.template` | nginx 配置，启用 SSI 回显用户名并提供健康检查入口；只放行来自核心地址（`${WONTON_CORE_ADDRESS}`）的请求，其余来源 403 |
-| `web/index.html` | 问候页 |
-| `web/tokens.css` | 页面主题变量的后备值 |
-| `tabs/` | 示例主页的应用页面图标 |
-| `screenshots/home.png` | 商店详情页的示例截图 |
-| `scripts/smoke-probes.sh` | 检查真实页面和网关注入身份的插件探针 |
+| `network.egress` | RSS 刷新、TMDB/Bangumi 元数据和海报下载 |
+| `storage.share.downloads:read` | 硬链接到媒体库时读取下载文件 |
+| `storage.share.media:write` | 硬链接写进媒体库共享文件夹 |
 
-从模板创建自己的插件后，替换示例清单、网页和素材；具体步骤见[写插件](https://github.com/wontonapp/wonton-docs/blob/main/develop.md#写插件)。
-
-## 对着别的栈跑探针
-
-`probes`、`api`、`session` 按 `.wonton/.env` 的 `WONTON_BASE_DOMAIN` 拼核心地址，`up` 起的栈自己写这个键。插件装进别人的栈、或者对着已有环境排查时，把那套栈的基础域名写进 `.wonton/.env`，不要只按实例名猜地址：实例名只是资源名前缀，网关按 Host 认域名，拼错了会回“没有安装”。
-
-```bash
-WONTON_BASE_DOMAIN=wonton.localhost
-```
-
-## 核心镜像
-
-检查和冒烟默认用套件里的核心镜像（`ghcr.io/wontonapp/wonton-core:main`）；要固定别的核心镜像，在仓库 Settings → Variables 设 `WONTON_CORE_IMAGE`，手动触发“检查”时填的 `core-image` 输入优先。
-
-## 更新开发套件
-
-```bash
-scripts/dev.sh kit-update
-```
-
-在从模板新建的插件仓库中更新套件；本仓库是套件源头，执行时只提示并退出。版本、可选引用和自定义脚本约定见[开发指南](https://github.com/wontonapp/wonton-docs/blob/main/develop.md#更新开发套件)。
+依赖 `torrent_client` 能力（由 qBittorrent 插件提供）：没有提供方时装不上。
 
 ## 图标
 
-`icon.svg` 是本仓库原创线条图标，按本仓库 MIT 许可证分发，见 [NOTICE](NOTICE)。
+`icon.svg` 使用 AutoBangumi 官方标志，来源、处理方式和商标说明见 [NOTICE](NOTICE)。
+
+## 上游
+
+- 应用：https://github.com/EstrellaXD/Auto_Bangumi （MIT），文档 https://www.autobangumi.org
+- 镜像：上游官方镜像 `ghcr.io/estrellaxd/auto_bangumi`，按清单列表摘要固定（见 `docker-compose.yml`）。
+- 一次性服务 `curlimages/curl`（MIT）只用来调应用接口签发 MCP 令牌。
