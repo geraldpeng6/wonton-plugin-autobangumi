@@ -40,7 +40,7 @@ before_install() {
 	fi
 	tmp="$(mktemp -d)"
 	if ! curl -fsSL --max-time 120 "https://codeload.github.com/geraldpeng6/wonton-plugin-qbittorrent/tar.gz/refs/heads/main" |
-		tar -x -C "$tmp"; then
+		tar -xz -C "$tmp"; then
 		echo "取不到 qbittorrent 上游包，requires 没有提供方可装"; return 1
 	fi
 	mv "$tmp/wonton-plugin-qbittorrent-main" "$tmp/src"
