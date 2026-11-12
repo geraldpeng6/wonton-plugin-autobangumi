@@ -53,10 +53,21 @@ if "provides:" not in s:
     assert s.count(old) == 1
     nl = s.index("\n", s.index(old) + len(old))
     s = s[: nl + 1] + "  provides:\n    torrent_client: { service: qbittorrent, port: 8080 }\n" + s[nl + 1 :]
-if "\n  lan:\n" in s:
-    head, rest = s.split("\n  lan:\n", 1)
-    depth = rest.index("\n  ") if "\n  " in rest else len(rest)
-    s = head + "\n" + rest[depth + 1 :]
+# 去掉整段 lan:（子项缩进 ≥ 4；下一个恰好 2 空格的键结束这一段）。
+out = []
+skip = False
+for line in s.split("\n"):
+    if line == "  lan:":
+        skip = True
+        continue
+    if skip:
+        if not line.strip() or line.startswith("    "):
+            continue
+        skip = False
+    out.append(line)
+# lan.ports 去掉后，成对的 network.lan 权限也去掉，check 要求两者要么都有要么都没有。
+s = "\n".join(out)
+s = "\n".join(line for line in s.split("\n") if line.strip() != "- network.lan")
 open(p, "w").write(s)
 PY
 	local image
