@@ -23,7 +23,9 @@ identity_check() { # 应用自己的“当前用户”接口认出登录的账�
 }
 
 # ---------- 工具（MCP，规范 0.11 起清单声明）----------
+# shellcheck disable=SC2034  # MCP_TOOL、MCP_ARGS 由 scripts/probes.sh 读取
 MCP_TOOL="get_program_status"   # 只读：返回 {version, running, first_run}
+# shellcheck disable=SC2034
 MCP_ARGS="{}"
 mcp_assert() { grep -q '"version"'; }   # 标准输入：工具调用结果
 
